@@ -1,0 +1,26 @@
+# java
+*.class
+*.jar*
+
+#vim
+*.java.swo
+*.swp
+
+#general
+.DS_Store
+*.v[0-9]
+*_v[0-9].java
+*_temp.java
+*_tmp.java
+*.txt*
+defunct-*
+*~
+
+#Liam's
+consensus.java
+ModFOLDclust2.jar
+ModFOLDclust2.sh
+runPDP.java
+runPDP.class
+corePrograms/
+filetypes/
