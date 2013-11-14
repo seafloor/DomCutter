@@ -8,11 +8,12 @@ my @files;
 my $name;
 my $folder;
 my $fasta;
+my $skipFile;
 
 say("the directory is $ARGV[0]");
 opendir (DIR, $ARGV[0]) or die "couldn't open the directory";
 while (my $file = readdir(DIR)) {
-#say("$file");
+    #say("$file");
     push(@files, $file);
 }
 @files=sort(@files);
@@ -24,16 +25,23 @@ foreach(@files) {
     } elsif($_ =~ /\./) {
         #say("$_");
     } else {
-        #say("$_");
         $name = $_;
         $folder = "$ARGV[0]$_/";
         $fasta = "$ARGV[0]$_.fasta";
-        #say("$folder, $fasta");
-        my @args = ("-jar", "ModFOLDclust2.jar", "$name", "$fasta", "$folder");
-        #say("@args");
-        system("java", @args) == 0
-            or die "failed: $?"
+        say("Checking $name");
 
+        #skip this loop if the ModFOLDclust2 file already exists
+        $skipFile = "$folder"."$name"."_ModFOLDclust2.sort";
+        if(-e $skipFile) {        
+            say("$name has already been run. Skipping...");
+        } else {
+            #otherwise, run ModFOLDclust2
+            say("$name has not been run yet. Running now...");
+            my @args = ("-jar", "ModFOLDclust2.jar", "$name", "$fasta", "$folder");
+            #say("@args");
+            system("java", @args) == 0
+                or die "failed: $?"
+        }
     }
 }
 #my @args = ("-jar", "ModFOLDclust2.jar", "$name", "$fasta", "$folder");
