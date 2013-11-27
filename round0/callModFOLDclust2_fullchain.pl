@@ -9,6 +9,10 @@ my $name;
 my $folder;
 my $fasta;
 my $skipFile;
+my $delFiles;
+my @delArgs;
+my @delSearch;
+my $delSearchFile;
 
 say("the directory is $ARGV[0]");
 opendir (DIR, $ARGV[0]) or die "couldn't open the directory";
@@ -32,26 +36,34 @@ foreach(@files) {
 
         #skip this loop if the ModFOLDclust2 file already exists
         $skipFile = "$folder"."$name"."_ModFOLDclust2.sort";
+        #or delete this feles if it has only been partially run, then run it again
+        $delFiles = "$folder"."$name"."_ModFOLDclustQ.unsort";
+        @delArgs = ("$folder"."$name"."_pairwise.out", "$folder"."$name"."_ModFOLDclustQ.unsort", "$folder"."$name"."_ModFOLDclust.unsort");
         if(-e $skipFile) {        
             say("$name has already been run. Skipping...");
+        } elsif(-e $delFiles) {
+            system("rm", "-rf", "$folder"."tmp.out");
+            system("rm", @delArgs);
+            opendir(SEARCH, $folder) or die "couldn't open dir for partially done files";
+            while($delSearchFile = readdir(SEARCH)) {
+                push(@delSearch, $delSearchFile);
+            }
+            foreach(@delSearch) {
+                if($_ =~ /.*(bfact|gnuplot)/) {
+                    system("rm", "$folder"."$_");
+                    say("$_ was deleted");
+                }
+            }
+            my @args = ("-jar", "ModFOLDclust2.jar", "$name", "$fasta", "$folder");
+            system("java", @args) == 0
+                or die "failed: $?"
         } else {
             #otherwise, run ModFOLDclust2
             say("$name has not been run yet. Running now...");
             my @args = ("-jar", "ModFOLDclust2.jar", "$name", "$fasta", "$folder");
-            #say("@args");
+            say("@args");
             system("java", @args) == 0
                 or die "failed: $?"
         }
     }
 }
-#my @args = ("-jar", "ModFOLDclust2.jar", "$name", "$fasta", "$folder");
-#say("@args");
-#system("java", @args) == 0
-#    or die "failed: $?"
-
-#    } elsif() {
-#        say("$path is a directory");
-#    } else {
-#        say("$file is a tar file");
-#    }
-#}
