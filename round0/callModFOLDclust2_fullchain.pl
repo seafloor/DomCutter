@@ -23,6 +23,9 @@ while (my $file = readdir(DIR)) {
 @files=sort(@files);
 #say("@files");
 
+#array of multi-domai targets according to the official domain definition
+my @multiDomains = qw! T0651 T0652 T0658 T0663 T0671 T0674 T0675 T0677 T0684 T0685 T0686 T0690 T0693 T0705 T0713 T0717 T0719 T0724 T0726 T0732 T0735 T0739 T0756 !;
+
 foreach(@files) {
     if($_ =~ /(T\d+)\..*/) {
         #say("$_");
@@ -33,6 +36,14 @@ foreach(@files) {
         $folder = "$ARGV[0]$_/";
         $fasta = "$ARGV[0]$_.fasta";
         say("Checking $name");
+
+        #if target isn't multidomain then skip loop
+        if(grep { $_ eq $name} @multiDomains) {
+            say("target $name is multidomain");
+        } else {
+            say("$name only contains one domain. Skipping...");
+            next;
+        }
 
         #skip this loop if the ModFOLDclust2 file already exists
         $skipFile = "$folder"."$name"."_ModFOLDclust2.sort";
