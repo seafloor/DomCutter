@@ -24,7 +24,7 @@ while (my $file = readdir(DIR)) {
 #say("@files");
 
 #array of multi-domai targets according to the official domain definition
-my @multiDomains = qw! T0651 T0652 T0658 T0663 T0671 T0674 T0675 T0677 T0684 T0685 T0686 T0690 T0693 T0705 T0713 T0717 T0719 T0724 T0726 T0732 T0735 T0739 T0756 !;
+my @multiDomains = qw! T0651 T0652 T0658 T0663 T0671 T0674 T0675 T0677 T0684 T0685 T0686 T0690 T0693 T0705 T0713 T0717 T0724 T0726 T0732 T0735 T0739 T0756 !;
 
 foreach(@files) {
     if($_ =~ /(T\d+)\..*/) {

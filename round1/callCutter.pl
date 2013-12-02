@@ -11,6 +11,7 @@ my $name;
 my $folder;
 my $fasta;
 my $QAfolder;
+my @multiDomains = qw! T0651 T0652 T0658 T0663 T0671 T0674 T0675 T0677 T0684 T0685 T0686 T0690 T0693 T0705 T0713 T0717 T0724 T0726 T0732 T0735 T0739 T0756 !;
 
 say("the directory is $ARGV[0]");
 say("the QA folder is $ARGV[1]");
@@ -40,21 +41,26 @@ foreach(@files) {
         $name = $_;
         $folder = "$ARGV[0]$_/";
         $fasta = "$ARGV[0]$_.fasta";
-        foreach(@QAfiles) {
-            #say "$QAfolder";
-            if($_ =~ /$name.*/) {
-                #say "matched to file $_";
-                $QAfolder = "$ARGV[1]$_";
+        if(grep { $_ eq $name} @multiDomains) {
+            say "$name contains more than one domain. Splitting...";
+            foreach(@QAfiles) {
                 #say "$QAfolder";
-                my @args = ("DomCutter", "$folder", "$name", "$QAfolder");
-                #my @TMscore = ("callTM.sh", "
-                say "@args";
-                #system("sh", @TMscore) == 0
-                #    or die "failed: $?"
-                system("java", @args) == 0
-                    or die "failed: $?"
+                if($_ =~ /$name.*/) {
+                    #say "matched to file $_";
+                    $QAfolder = "$ARGV[1]$_";
+                    #say "$QAfolder";
+                    my @args = ("DomCutter", "$folder", "$name", "$QAfolder");
+                    #my @TMscore = ("callTM.sh", "
+                    say "@args";
+                    #system("sh", @TMscore) == 0
+                    #    or die "failed: $?"
+                    system("java", @args) == 0
+                        or die "failed: $?"
+                }
+            
             }
-        
+        } else {
+            say "$name only contains one domain. Skipping...";
         }
     }
 }
