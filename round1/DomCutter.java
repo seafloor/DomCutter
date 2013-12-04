@@ -97,7 +97,7 @@ public class DomCutter {
                                     //new plan: move the mkdirs out of the loop - if the directory already exists then overwrite, otherwise create it. Use domain numbers from the linked hash set to create the dirs
                                     new File("/home/matt/project/data/split_doms/" + target + "/").mkdirs();
                                     new File("/home/matt/project/data/split_doms/" + target + "/" + "dom_" + residue_dom + "/").mkdirs();
-                                    File output = new File("/home/matt/project/data/split_doms/" + target + "/" + "dom_" + residue_dom + "/" + modelname + "_dom_" + residue_dom + ".dat");
+                                    File output = new File("/home/matt/project/data/split_doms/" + target + "/" + "dom_" + residue_dom + "/" + modelname);
                                     BufferedWriter writedata = new BufferedWriter(new FileWriter(output, true));
                                     writedata.write(atom_coordinate + "\n");
                                     writedata.close();
