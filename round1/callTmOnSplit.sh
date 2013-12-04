@@ -14,7 +14,6 @@ i=0
 multiDomains="T0651 T0658 T0663 T0671 T0674 T0677 T0684 T0685 T0686 T0690 T0693 T0705 T0717 T0726 T0732 T0739 T0756" 
 for folder in $FILES; do
     filename=$(basename "$folder")
-    let i++
     for splitdoms in $folder/*; do
         #echo $splitdoms
         if [[ $splitdoms =~ dom_([0-9]?-?) ]]; then
@@ -24,9 +23,6 @@ for folder in $FILES; do
             if [[ $multiDomains =~ $filename ]]; then 
                 echo $splitdoms
                 echo $native
-                if [[ i==1 ]]; then
-                    echo "Target,Domain,Model,GDTscore" >>"$3${filename}domain_$domain.txt"
-                fi
                 for path in $splitdoms/*; do
                     modelname=$(basename $path)
                     echo "checking $modelname"
@@ -39,6 +35,10 @@ for folder in $FILES; do
                     else
                         score=""
                     fi
+                    if [[ i==0 ]]; then
+                        echo "Target,Domain,Model,GDTscore" >>"$3GDTscoresForSplit.csv"
+                    fi
+                    let i++
                     line="$filename,$domain,$modelname,$score"
                     echo "$line" >>"$3GDTscoresForSplit.csv"
                 done
@@ -48,23 +48,5 @@ for folder in $FILES; do
         fi
     done
 done
-#echo "" >>"$3domain_$domain.txt"
-#for folder in $FILES; do
-#    filename=$(basename "$folder")
-#    for splitdoms in $folder/*; do
-#        #echo $splitdoms
-#        if [[ $splitdoms =~ dom_([0-9]?-?) ]]; then
-#            #echo ${BASH_REMATCH[1]}
-#            domain=${BASH_REMATCH[1]}
-#            native=$2${filename}-D${domain}.pdb
-#            if [[ $multiDomains =~ $filename ]]; then 
-#                #grep GDT-TS "$3${filename}_$domain.GDT"
-#                if [[ grep GDT-TS "$3${filename}_$domain.GDT" =~ GDT-TS-score=\s(0.[0-9]+)\s\(* ]]; then
-#                   echo -n "${BASH_REMATCH[1]}," >>"$3${filename}domain_$domain.txt"
-#                fi
-#            fi
-#        fi
-#    done
-#done
 
 exit 0
