@@ -62,6 +62,9 @@ public class DomCutter {
             LinkedHashSet<String> domain_nums = new LinkedHashSet(don.getDomainsAsHash());
             System.out.println("New domain numbers: " + strdomain_nums);
 
+            //split the native structure file into the PDP domains (used later in analysis)
+            NativeCutter nc = new NativeCutter(consensus_pdp, target);
+
             //divide model file
             //for each file in the directory, iterate through the pdp file and put the PDB lines into the correct domain file
             //StringTokenizer dompredtoks = new StringTokenizer( dompred, "\n" );
@@ -113,6 +116,7 @@ public class DomCutter {
             System.out.println("done.");
 
             //call class to split the fasta file into different sections
+            int targetSize = 0;
             ArrayList<Integer> domsizes = new ArrayList();
             System.out.println("Splitting the fasta file... ");
             File fastainput = new File(dir + ".fasta");
@@ -128,6 +132,7 @@ public class DomCutter {
                 System.out.println("Success: split the fasta file");
                 fastafile = fc.getFastaFile();
                 domsizes = fc.getDomainSizes();
+                targetSize = fc.getFastaLength();
                 if(fastafile.equals(sequence)) {
                     //System.out.println("Fasta files are the same!");
                 } else {
@@ -136,7 +141,7 @@ public class DomCutter {
             } else {
                 System.out.println("Error: fasta file was not read in");
             }
-
+            
             //check that all output files are the right length
             System.out.println("Cleaning up output...");
             Iterator<String> iterator = domain_nums.iterator();
@@ -147,6 +152,9 @@ public class DomCutter {
             int current = 0;
             int previous;
             int numint = 0;
+
+            //csv file for output
+
             ArrayList<String> incomplete_doms = new ArrayList();
             //iterates through the domain numbers for this model, creating a list of all the files in the directory for that domain
             while(iterator.hasNext()) {
@@ -188,8 +196,16 @@ public class DomCutter {
                             previous = current;
                         }
                         int finalsize = domsizes.get(linecheck);
+                        
+                        //output target name, model name, domain number and domain size to a csv file
+                        File csvout = new File("/home/matt/project/data/rawData/round1output/domainlengths.csv");
+                        BufferedWriter writecsv = new BufferedWriter(new FileWriter(csvout, true));
+                        writecsv.write(target + "," + modelcheck + "," + domcheck + "," + finalsize + "," + targetSize + "\n");
+                        writecsv.close();
+                        //System.out.println(target + "," + modelcheck + "," + domcheck + "," + finalsize + "\n");
                         System.out.println("Number of residues in the ATOM file: " + residue_count);
                         System.out.println("Number of residues in the fasta file (correct number): " + finalsize);
+
                         //checks if the number of residues in the ATOM file is equal to the number of residues in the fasta file
                         if(residue_count == finalsize) {
                             System.out.println(modelcheck + ": file length is okay");

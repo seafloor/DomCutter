@@ -1,11 +1,10 @@
 #!/bin/bash -f
 #Call script with the dir containing the subdirs for all the split CASP files and the dir with fasta files
 #Will call ModFOLDclust2 on each of these
-#call as: bash callTmOnSplit.sh /home/matt/project/data/split_doms/ /home/matt/project/data/CASP10_split_structures_official/ /home/matt/project/data/rawData/round1output/splitGDTscores/splitAgainstOfficialSplit/
+#call as: bash ModFOLDtoCSV.sh /home/matt/project/data/split_doms/ /home/matt/project/data/rawData/round1output/splitModFoldscores/
 
 echo "called with the directory $1"
-echo "the native structure dir is $2"
-echo "the output dir is $3"
+echo "the output dir is $2"
 
 FILES=$1*
 REGEX="dom_([0-9]?-?)"
@@ -19,29 +18,30 @@ for folder in $FILES; do
         if [[ $splitdoms =~ dom_([0-9]?-?) ]]; then
             #echo ${BASH_REMATCH[1]}
             domain=${BASH_REMATCH[1]}
-            native=$2${filename}-D${domain}.pdb
             if [[ $multiDomains =~ $filename ]]; then 
                 echo $splitdoms
-                echo $native
                 for path in $splitdoms/*; do
                     modelname=$(basename $path)
                     echo "checking $modelname"
-                    java -jar TMscore.jar $path $native >"$3${filename}_${domain}_${modelname}.GDT"
-                    GDTline=$(grep GDT-TS "$3${filename}_${domain}_$modelname.GDT")
-                    #echo $GDTline
-                    if [[ $GDTline =~ GDT-TS-score=[[:space:]]+([0-9].[0-9]{4})[[:space:]] ]]; then
+                    #java -jar TMscore.jar $path $native >"$3${filename}_${domain}_${modelname}.GDT"
+                    echo "searching $1${filename}/dom_${domain}/${filename}_ModFOLDclust2.sort"
+                    ModFOLDline=$(grep $modelname "$1${filename}/dom_${domain}/${filename}_ModFOLDclust2.sort")
+                    #echo $ModFOLDline
+                    if [[ $ModFOLDline =~ ${modelname}[[:space:]]+([0-9].[0-9]+)[[:space:]] ]]; then
                         score=${BASH_REMATCH[1]}
-                        #echo $score
+                        #echo "score is $score"
                         if [[ $i -eq 0 ]]; then
-                            echo "Target,Domain,Model,GDTscore" >>"$3GDTscoresForSplit.csv"
+                            echo "Target,Domain,Model,ModFOLDscore" >>"$2ModFOLDscoresForSplit.csv"
+                            i=1
+                            echo $i
                         fi
-                        let i++
                         line="$filename,$domain,$modelname,$score"
-                        echo "$line" >>"$3GDTscoresForSplit.csv"
+                        echo "$line" >>"$2ModFOLDscoresForSplit.csv"
+                    else
+                        score=""
                     fi
-                    score=""
-                    GDTline=""
                 done
+                score=""
             else
                 echo "didn't run TMscore ---target only contains one domain!"
             fi

@@ -12,6 +12,7 @@ public class FastaCutter {
     String header = "";
     String newheader = "";
     ArrayList<Integer> domainsizes = new ArrayList();
+    int trimlen;
     public FastaCutter(String model, String fastafile, String domfile, String doms) {
         String numcheck = "";
         Scanner scanner = new Scanner(fastafile);
@@ -33,7 +34,7 @@ public class FastaCutter {
         //System.out.print(trimmed);
 
         //check the pdp file and the fasta file are the same length
-        int trimlen = trimmed.length();
+        trimlen = trimmed.length();
         int domlen = domfile.length();
         StringBuffer fastabuffer = new StringBuffer();
         StringBuffer discon_buff = new StringBuffer();
@@ -201,6 +202,11 @@ public class FastaCutter {
         return trimmed;
     }
 
+    //returns fasta file length
+    public int getFastaLength() {
+        return trimlen;
+    }
+
     public static void main(String[] args) {
         //String fastafile = ">T0690 EL13177C, Faecalibacterium prausnitzii A2-165, 393 residues\nASDSPMAYTDGSYQFILNADNTATITKYTGNEHRITIPAQVTHGAYIYPVSKIGDRVFCN\nYKYVLTSVQIPDTVTEIGSNAFYNCTSLKRVTIQDNKPSCVKKIGRQAFMFCSELTDIPI\nLDSVTEIDSEAFHHCEELDTVTIPEGVTSVADGMFSYCYSLHTVTLPDSVTAIEERAFTG\nTALTQIHIPAKVTRIGTNAFSECFALSTITSDSESYPAIDNVLYEKSANGDYALIRYPSQ\nREDPAFKIPNGVARIETHAFDSCAYLASVKMPDSVVSIGTGAFMNCPALQDIEFSSRITE\nLPESVFAGCISLKSIDIPEGITQILDDAFAGCEQLERIAIPSSVTKIPESAFSNCTALNN\nIEYSGSRSQWNAISTDSGLQNLPVAPGSIDVTV";
         //String domfile = "111112222233333";
@@ -208,6 +214,7 @@ public class FastaCutter {
         FastaCutter fc = new FastaCutter(args[0], args[1], args[2], args[3]);
         System.out.println( fc.getFastaFile() );
         System.out.println( fc.getDomainSizes() );
+        System.out.println( fc.getFastaLength() );
     }
 }
 
