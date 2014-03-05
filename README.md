@@ -1,7 +1,6 @@
 DomCutter
 =========
-
-## domain-based clustering for protein structure MQA 
+*domain-based clustering for protein structure MQA*
 
 ### Outline
 -----------
