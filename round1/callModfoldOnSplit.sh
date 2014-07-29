@@ -8,7 +8,7 @@ echo "the fasta file dir is $2"
 
 FILES=$1*
 REGEX="dom_([0-9]?-?)"
-multiDomains="T0726 T0739 T0756" 
+multiDomains="T0726" 
 
 for folder in $FILES; do
     filename=$(basename "$folder")

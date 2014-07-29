@@ -1,7 +1,7 @@
 #!/bin/bash -f
 #Call script with the dir containing the subdirs for all the split CASP files and the dir with fasta files
 #Will call ModFOLDclust2 on each of these
-#call as: bash ModFOLDtoCSV.sh /home/matt/project/data/split_doms/ /home/matt/project/data/rawData/round1output/splitModFoldscores/
+#call as: bash ModFOLDtoCSV.sh /home/matt/project/data/split_doms/ /home/matt/project/data/rawData/round1output/
 
 echo "called with the directory $1"
 echo "the output dir is $2"
@@ -10,7 +10,7 @@ FILES=$1*
 REGEX="dom_([0-9]?-?)"
 REGEX2="GDT-TS-score=\s(0.\d{4})\s*"
 i=0
-multiDomains="T0651 T0658 T0671 T0677 T0686 T0690 T0705 T0717 T0726" 
+multiDomains="T0651 T0658 T0671 T0686 T0690 T0705 T0717 T0726" 
 for folder in $FILES; do
     filename=$(basename "$folder")
     for splitdoms in $folder/*; do
