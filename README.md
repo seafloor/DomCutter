@@ -1,20 +1,19 @@
 DomCutter
 =========
-*domain-based clustering for protein structure MQA*
+*domain-based clustering for protein structure model quality assessment*
 
 ### Outline
 -----------
 
-This project attempts to refine the quality assessment of protein models. When trying to predict the structure of a protein target, often several models can be obtained from different servers. These models then need to be assessed, but how do you know which is the best when you don't know what the actual structure looks like?
-
-Currently all methods do this by producing a global quality score for each model. Some are single-model methods that consider each model individually, others consider all models together and take a clustering-based approach. Here we apply hierarchical clustering to individual domains, rather than entire structures. This is because when global scores are used, the highest-ranking model may have a very poorly modelled domain yet still have the best global score. It's also true that most accurate model is often missed and another model is selected as the best. Our domain-focussed approach attempts to produce new global scores that are more accurate, and create hybrid structures that could be better in quality than any of the original models.
+This project attempts to refine the quality assessment of protein models by focussing on domains rather than whole structures. The term domain is used loosely: it may refer to a traditional domain prediction or a region predicted to be of different quality compared to the rest of the structure based on local quality scores or disorder predictions. The "domains" identified by these methods are scored separately via hierarchichal clustering. The resulting domain scores may be combined to provide a new global score, or they may be used to splice domains together into new structures.
 
 ### Sections
 ------------
-- round0: scripts to generate data from the previous method
-- round1: generates scores for separate domains
-- round2: generates hybrid models
+- CombinedScores: generates scores for separate domains, as defined by PDP, and recombines them into new global scores
+- Hybrids: generates hybrid models based on the best domains from CombinedScores (coming soon)
+- DisorderDomains: uses local residue scores to define "domains" and create hybrid structures (coming soon)
+- Analysis: scripts to reproduce analysis of all methods
 
 ### Notes
 ---------
-To run the code you will need [PDP](http://bioinformatics.oxfordjournals.org/content/19/3/429.long) and [ModFOLDclust2](http://www.reading.ac.uk/bioinf/ModFOLD/index.html). Analysis will need the [TMscore](http://zhanglab.ccmb.med.umich.edu/TM-score/) algorithm.
+You will need [PDP](http://bioinformatics.oxfordjournals.org/content/19/3/429.long) for CombinedScores and Hybrids, and [ModFOLDclust2](http://www.reading.ac.uk/bioinf/ModFOLD/index.html) for all 3 methods. Analysis will need [TMscore](http://zhanglab.ccmb.med.umich.edu/TM-score/).
