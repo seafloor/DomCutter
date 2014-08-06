@@ -12,6 +12,7 @@ This project attempts to refine the quality assessment of protein models by focu
 - CombinedScores: generates scores for separate domains, as defined by PDP, and recombines them into new global scores
 - Hybrids: generates hybrid models based on the best domains from CombinedScores (coming soon)
 - DisorderDomains: uses local residue scores to define "domains" and create hybrid structures (coming soon)
+- CoreTools: classes used by all sections to perform common tasks
 - Analysis: scripts to reproduce analysis of all methods
 
 ### Notes
