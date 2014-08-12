@@ -26,7 +26,7 @@ public class ReadPDB {
         // main method
         try {
             Scanner wholeScan = new Scanner(new File(PDBfile)).useDelimiter("\\Z");
-            PDBString = wholeScan.next();
+            this.PDBString = wholeScan.next();
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
@@ -35,20 +35,20 @@ public class ReadPDB {
     // getter to return the PDB file as a String
     public String getPDBString() {
         getPDBFile();
-        return PDBString;
+        return this.PDBString;
     }
 
     // the 3 methods below are needed to return a Fasta File of the String
     // method below is called publicly to retrieve fasta file
     public String getFasta() {
-        PDBFasta = getFastaFromPDB(PDBString);
-        return PDBFasta;
+        this.PDBFasta = getFastaFromPDB(PDBString);
+        return this.PDBFasta;
     }
 
     // overload for getting fasta sequence if you already have the PDB file as a String
     public String getFasta(String PDBString) {
-        PDBFasta = getFastaFromPDB(PDBString);
-        return PDBFasta;
+        this.PDBFasta = getFastaFromPDB(PDBString);
+        return this.PDBFasta;
     }
 
     // hashmap to convert the triplet AA code to single letter AA code for the Fasta file
@@ -125,7 +125,7 @@ public class ReadPDB {
     public void writeFastaFile(String outputDir) {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(new File(outputDir + target + ".fasta")));
-            writer.write(PDBFasta);
+            writer.write(this.PDBFasta);
             writer.close();
         } catch (IOException writeE) {
             System.out.println("Error: couldn't write Fasta file");
