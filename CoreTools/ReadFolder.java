@@ -1,8 +1,8 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.LinkedHashSet;
 import java.util.Iterator;
-import java.util.Arrays;
 import java.io.File;
 import java.io.FilenameFilter;
 
@@ -14,23 +14,23 @@ public class ReadFolder {
     private String fastaAsStrings; // will hold each fasta String on a new line of a String. Alternative to fastaStrings
     private String header; // the header of the fasta file. Only used if fastas returned as String, not ArrayList
 
+    // constructor called with directory
+    // outputs file list to ArrayList
+    // assumes all files in the directory are pdb files!
     public ReadFolder (String path, String target) {
-        // constructor called with directory
-        // outputs file list to ArrayList
-        // assumes all files in the directory are pdb files!
         File directory = new File(path);
         this.target = target;
         if (directory.isDirectory()) {
             FilenameFilter pdb = new OnlyPdb();
             ArrayList<String> fileNames = new ArrayList<String>(Arrays.asList(directory.list(pdb)));
             int numFiles = fileNames.size();
-            pdbStrings = new ArrayList<String>(numFiles);
-            fastaStrings = new ArrayList<String>(numFiles);
-            fileLocations = new ArrayList<String>(numFiles);
+            this.pdbStrings = new ArrayList<String>(numFiles);
+            this.fastaStrings = new ArrayList<String>(numFiles);
+            this.fileLocations = new ArrayList<String>(numFiles);
             for (String name : fileNames) {
-                File notDir = new File (path+name);
+                File notDir = new File(path+name);
                 if (!notDir.isDirectory()) {
-                    fileLocations.add(path + name);
+                    this.fileLocations.add(path + name);
                 }
             }
         } else {
@@ -38,14 +38,14 @@ public class ReadFolder {
         }
     }
 
+    // constructor called with a String of file names and a directory
+    // outputs file list to ArrayList again
     public ReadFolder (LinkedHashSet fileList, String path, String target) {
-        // constructor called with a String of file names and a directory
-        // outputs file list to ArrayList again
         this.target = target;
         int numFiles = fileList.size();
-        fileLocations = new ArrayList<String>(numFiles);
-        pdbStrings = new ArrayList<String>(numFiles);
-        fastaStrings = new ArrayList<String>(numFiles);
+        this.fileLocations = new ArrayList<String>(numFiles);
+        this.pdbStrings = new ArrayList<String>(numFiles);
+        this.fastaStrings = new ArrayList<String>(numFiles);
         File directory = new File(path);
 
         if (directory.isDirectory()) {
@@ -55,7 +55,7 @@ public class ReadFolder {
                 stringPath = path + itr.next();
                 File filePath = new File(stringPath);
                 if (filePath.isFile()) {
-                    fileLocations.add(stringPath);
+                    this.fileLocations.add(stringPath);
                 }
             }
         }
@@ -77,7 +77,7 @@ public class ReadFolder {
     // public method to return the array of PDB file strings
     public ArrayList getPDBStrings() {
         getMultiplePDB();
-        return pdbStrings;
+        return this.pdbStrings;
     }
 
     // not called directly
@@ -111,9 +111,9 @@ public class ReadFolder {
             fastaString = rp.getFasta();
 
             Scanner scanner = new Scanner(fastaString);
-            while(scanner.hasNext()) {
+            while (scanner.hasNext()) {
                 String line = scanner.nextLine();
-                if(!line.startsWith(">")) {
+                if (!line.startsWith(">")) {
                     buffer.append(line);
                 } else {
                     if (counter == 0) {
@@ -131,7 +131,6 @@ public class ReadFolder {
     public String getFastaStrings() {
         getMultipleFastaAsString();
         return this.fastaAsStrings;
-        // need to write private method to return as a string
     }
     
     // called directly
