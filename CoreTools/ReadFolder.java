@@ -1,4 +1,10 @@
-
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.LinkedHashSet;
+import java.util.Iterator;
+import java.util.Arrays;
+import java.io.File;
+import java.io.FilenameFilter;
 
 public class ReadFolder {
     private ArrayList<String> fileLocations; // an ArrayList (or arraylist/linkedlist?) for holding each file location
@@ -8,38 +14,48 @@ public class ReadFolder {
     private String fastaAsStrings; // will hold each fasta String on a new line of a String. Alternative to fastaStrings
     private String header; // the header of the fasta file. Only used if fastas returned as String, not ArrayList
 
-    public ReadFolder (String directory, String target) {
+    public ReadFolder (String path, String target) {
         // constructor called with directory
         // outputs file list to ArrayList
         // assumes all files in the directory are pdb files!
+        File directory = new File(path);
         this.target = target;
         if (directory.isDirectory()) {
-            File file = new File(directory);
-            ArrayList<File> fileLocations = new ArrayList<File>(Array.asList(f.listFiles()));
-            int numFiles = fileLocations.size();
+            FilenameFilter pdb = new OnlyPdb();
+            ArrayList<String> fileNames = new ArrayList<String>(Arrays.asList(directory.list(pdb)));
+            int numFiles = fileNames.size();
             pdbStrings = new ArrayList<String>(numFiles);
-            fastaStrings = new ArrayList<String>(numFiles)
+            fastaStrings = new ArrayList<String>(numFiles);
+            fileLocations = new ArrayList<String>(numFiles);
+            for (String name : fileNames) {
+                File notDir = new File (path+name);
+                if (!notDir.isDirectory()) {
+                    fileLocations.add(path + name);
+                }
+            }
         } else {
             System.out.println("Error: String is not a directory");
         }
     }
 
-    public ReadFolder (LinkedHashSet fileList, String directory, String target) {
+    public ReadFolder (LinkedHashSet fileList, String path, String target) {
         // constructor called with a String of file names and a directory
         // outputs file list to ArrayList again
         this.target = target;
-        numFiles = fileList.size();
+        int numFiles = fileList.size();
         fileLocations = new ArrayList<String>(numFiles);
         pdbStrings = new ArrayList<String>(numFiles);
-        fastaStrings = new ArrayList<String>(numFiles)
+        fastaStrings = new ArrayList<String>(numFiles);
+        File directory = new File(path);
 
         if (directory.isDirectory()) {
-            Iterator itr = new fileList.iterator();
-            String filePath;
+            Iterator itr = fileList.iterator();
+            String stringPath;
             while (itr.hasNext()) {
-                filePath = Directory + itr.next();
+                stringPath = path + itr.next();
+                File filePath = new File(stringPath);
                 if (filePath.isFile()) {
-                    fileLocations.add(filePath);
+                    fileLocations.add(stringPath);
                 }
             }
         }
@@ -50,8 +66,9 @@ public class ReadFolder {
     private void getMultiplePDB() {
         String pdbString;
         for (String pdbLocation : this.fileLocations) {
+            System.out.println(pdbLocation);
             ReadPDB rp = new ReadPDB (pdbLocation, this.target);
-            pdbString = rp.getPDBString;
+            pdbString = rp.getPDBString();
             this.pdbStrings.add(pdbString);
         }
     }
@@ -67,11 +84,9 @@ public class ReadFolder {
     // private method to call multiple getFasta() and output each to the array
     private void getMultipleFasta() {
         String fastaString;
-        String pdbString;
         for (String pdbLocation : this.fileLocations) {
             ReadPDB rp = new ReadPDB (pdbLocation, this.target);
-            pdbString = rp.getPDBString();
-            this.pdbStrings.add(pdbString);
+            rp.getPDBString();
             fastaString = rp.getFasta();
             this.fastaStrings.add(fastaString);
         }
@@ -87,13 +102,12 @@ public class ReadFolder {
     // puts output in format needed for consensus.java
     private void getMultipleFastaAsString() {
         String fastaString;
-        String pdbString;
-        String header;
+        String header = "";
         int counter = 0;
         StringBuffer buffer = new StringBuffer();
         for (String pdbLocation : this.fileLocations) {
             ReadPDB rp = new ReadPDB (pdbLocation, this.target);
-            pdbString = rp.getPDBString();
+            rp.getPDBString();
             fastaString = rp.getFasta();
 
             Scanner scanner = new Scanner(fastaString);
@@ -102,7 +116,7 @@ public class ReadFolder {
                 if(!line.startsWith(">")) {
                     buffer.append(line);
                 } else {
-                    if (counter.equals(0)) {
+                    if (counter == 0) {
                         header = line;
                     }
                 }
@@ -116,7 +130,7 @@ public class ReadFolder {
 
     public String getFastaStrings() {
         getMultipleFastaAsString();
-        return this.fastaAsString;
+        return this.fastaAsStrings;
         // need to write private method to return as a string
     }
     
@@ -126,7 +140,13 @@ public class ReadFolder {
         return this.header;
     }
 
-    public static main void () {
-        // call at terminal
+    public static void main (String[] args) {
+        ReadFolder rf = new ReadFolder (args[0], args[1]);
+        ArrayList<String> ap = new ArrayList<String>(rf.getPDBStrings());
+        ArrayList<String> al = new ArrayList<String>(rf.getFastaStringsAsArray());
+        // for (int i = 0; i < ap.size(); i++) {
+            // System.out.println(ap.get(i));
+            // System.out.println(al.get(i));
+        // }
     }
 }
