@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class TopReader {
-	private LinkedHashSet<String> topServers; // will hold the list of the top 10 servers
+    private LinkedHashSet<String> topServers; // will hold the list of the top 10 servers
     private ArrayList<String> topBfactors; // will hold the bfactor scores from the top 10 servers
     private ArrayList<String> fullOutput; // will hold the full ModFOLDclust2 output
     private String filePath; // hold the path for the ModFOLDclust2.sort file
