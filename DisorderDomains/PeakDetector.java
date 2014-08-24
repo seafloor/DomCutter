@@ -3,12 +3,13 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.File;
 import java.lang.StringBuffer;
+import java.lang.ArrayIndexOutOfBoundsException;
 
 public class PeakDetector {
     private ArrayList<Double> bfactors = new ArrayList<Double>(); // holds the bfactors for a given model as a String 
     private String residueQuality; // each residue is denoted "o" or "d" for ordered or disordered
     private String domainPred; // holds the final domain boundaries as a String
-    private int upperLimit = 14; // the cutoff value for a region to be considered disordered
+    private int upperLimit = 13; // the cutoff value for a region to be considered disordered
     private int window; // the size of the sliding window
 
     // call with the path of the ModFOLDclust2.sort file and the number of servers to consider
@@ -50,11 +51,17 @@ public class PeakDetector {
                 average = bfactors.get(middle);
                 int count = 1; // starts at 1 because the middle has already been set
                 int gap = 1; // moves away from the middle value by 1 each time
-                while (count <= window) {
-                    average += bfactors.get(middle - gap);
-                    average += bfactors.get(middle + gap);
-                    count += 2;
-                    gap ++;
+                try{
+                    while (count < window) {
+                        average += bfactors.get(middle - gap);
+                        average += bfactors.get(middle + gap);
+                        count += 2;
+                        gap ++;
+                    }
+                } catch (ArrayIndexOutOfBoundsException aob) {
+                    aob.printStackTrace();
+                    System.out.println("middle = " + middle);
+                    System.out.println("gap = " + gap);
                 }
                 average = average / window;
             }
@@ -106,11 +113,16 @@ public class PeakDetector {
     // call the above 2 methods
     public String getSinglePrediction() {
         findDisorderedRegions();
+        System.out.println("disorder pred: " + this.residueQuality + "\n");
         disorderedToDomains();
+        System.out.println("domain pred: " + this.domainPred + "\n");
         return this.domainPred;
     } 
 
     public static void main (String args[]) {
-        // 
+        String bfact = args[0];
+        int size = Integer.parseInt(args[1]);
+        PeakDetector pd = new PeakDetector(bfact, size);
+        pd.getSinglePrediction();
     }
 }
