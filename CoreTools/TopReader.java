@@ -114,9 +114,9 @@ public class TopReader {
         readBfactors();
         return this.topBfactors;
     }
-    
+
 	public static void main(String[] args) {
-        // TopReader tr = new TopReader (args[0]);
+        // TopReader tr = new TopReader (args[0], args[1]);
         // ArrayList<String> sf = new ArrayList<String>(tr.getSortFile());
 
         // LinkedHashSet<String> gts = new LinkedHashSet<String>(tr.getTopServers());
