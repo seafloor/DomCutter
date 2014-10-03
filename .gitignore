@@ -1,5 +1,4 @@
 # java
-*.class
 *.jar*
 
 #vim
@@ -22,10 +21,8 @@ ModFOLDclust2.jar
 ModFOLDclust2.sh
 runPDP.java
 runPDP.class
-corePrograms/
 filetypes/
 
 #other's
 round2/scons/
-DisorderDomains/removeDisordered.java
 old/
