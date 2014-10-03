@@ -2,8 +2,6 @@ import java.util.LinkedHashSet;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.File;
-import java.lang.StringBuffer;
-import java.lang.ArrayIndexOutOfBoundsException;
 
 public class PeakDetector {
     private ArrayList<Double> bfactors = new ArrayList<Double>(); // holds the bfactors for a given model as a String 
@@ -29,6 +27,7 @@ public class PeakDetector {
 
     // private int findUpperLimit() {
         // will eventually be used to find to best upperlimit value for a file
+        // this.upperLimit = new upper limit
     // }
 
     private void findDisorderedRegions() {
@@ -96,11 +95,11 @@ public class PeakDetector {
                 currentSize++;
                 buffer.append(Integer.toString(currentDomain));
             } else if (currentType != previousType) {
-                if (currentSize >= 30) {
+                if (currentSize >= 30) { // change value to change domain size
                     currentSize = 0;
                     currentDomain++;
                     buffer.append(Integer.toString(currentDomain));
-                } else if (currentSize < 30) {
+                } else if (currentSize < 30) { // change value to change domain size
                     currentSize++;
                     buffer.append(Integer.toString(currentDomain));
                 }
